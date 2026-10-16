@@ -1,0 +1,554 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A student project connecting Penn State students with official university resources.">
+  <title>Nittany Guide | Penn State Resources</title>
+
+  <style>
+    :root {
+      --navy: #001e44;
+      --blue: #1e5aa8;
+      --gold: #f4c542;
+      --page: #f4f7fb;
+      --white: #fff;
+      --ink: #17212b;
+      --muted: #526273;
+      --border: #d5dee8;
+      --urgent-bg: #fff1f0;
+      --urgent-border: #b42318;
+      --shadow: 0 4px 16px #001e4410;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--page);
+      color: var(--ink);
+      font: 16px/1.55 system-ui, -apple-system, "Segoe UI", sans-serif;
+    }
+
+    a { color: #064f91; }
+    a:focus-visible, button:focus-visible, input:focus-visible {
+      outline: 3px solid var(--gold);
+      outline-offset: 3px;
+    }
+
+    .site-header {
+      color: var(--white);
+      background: var(--navy);
+      border-bottom: 6px solid var(--gold);
+      padding: 24px 18px;
+    }
+
+    .container { width: min(960px, 100% - 32px); margin-inline: auto; }
+    .site-header h1 { margin: 0; font-size: clamp(1.7rem, 4vw, 2.2rem); }
+    .site-header p { margin: 4px 0 0; color: #e5edf7; }
+
+    main { padding-block: 24px; }
+
+    .notice, .card, .answer, .faq-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+    }
+
+    .urgent {
+      padding: 18px;
+      margin-bottom: 20px;
+      background: var(--urgent-bg);
+      border: 2px solid var(--urgent-border);
+      border-radius: 12px;
+    }
+
+    .urgent h2 { margin: 0 0 8px; color: #8c1d18; font-size: 1.2rem; }
+    .urgent p { margin: 6px 0; }
+
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .tab, .filter, .clear-button {
+      border: 1px solid var(--navy);
+      border-radius: 8px;
+      padding: 10px 14px;
+      background: var(--white);
+      color: var(--navy);
+      font: inherit;
+      font-weight: 650;
+      cursor: pointer;
+    }
+
+    .tab[aria-selected="true"], .filter[aria-pressed="true"] {
+      background: var(--navy);
+      color: var(--white);
+    }
+
+    .card { padding: clamp(16px, 3vw, 24px); margin-bottom: 18px; }
+    h2 { margin: 0 0 8px; color: var(--navy); }
+    .intro { margin-top: 0; color: var(--muted); }
+
+    label { display: block; margin-bottom: 6px; font-weight: 700; }
+
+    .search-row { display: flex; gap: 8px; }
+
+    input[type="search"] {
+      flex: 1;
+      min-width: 0;
+      border: 1px solid #8796a7;
+      border-radius: 8px;
+      padding: 12px;
+      font: inherit;
+    }
+
+    .submit-button {
+      border: 0;
+      border-radius: 8px;
+      padding: 12px 16px;
+      background: var(--navy);
+      color: var(--white);
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 14px 0;
+    }
+
+    .filter { padding: 7px 12px; font-size: .94rem; }
+
+    .answer {
+      min-height: 70px;
+      padding: 16px;
+      margin-top: 16px;
+    }
+
+    .answer p { margin: 0 0 8px; }
+    .answer p:last-child { margin-bottom: 0; }
+
+    .faq-list, .resource-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .faq-card, .resource-card { padding: 16px; }
+    .faq-card h3, .resource-card h3 { margin: 0 0 6px; color: var(--navy); font-size: 1.05rem; }
+    .faq-card p, .resource-card p { margin: 0 0 8px; color: var(--muted); }
+    .category-label { color: var(--muted); font-size: .85rem; font-weight: 700; }
+
+    .small-note, footer { color: var(--muted); font-size: .92rem; }
+    footer { padding: 2px 0 28px; }
+    [hidden] { display: none !important; }
+
+    @media (max-width: 560px) {
+      .search-row { flex-direction: column; }
+      .submit-button { width: 100%; }
+      .tab { flex: 1 1 auto; }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="site-header">
+    <div class="container">
+      <h1>Nittany Guide</h1>
+      <p>Find Penn State student services and official resources</p>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="urgent" aria-labelledby="urgent-heading">
+      <h2 id="urgent-heading">Need urgent help?</h2>
+      <p><strong>If anyone is in immediate danger, call 911.</strong></p>
+      <p>
+        Penn State University Police: <a href="tel:8148631111">814-863-1111</a>
+      </p>
+      <p>
+        24/7 Penn State Crisis Line:
+        <a href="tel:18772296400">1-877-229-6400</a>,
+        or text <strong>LIONS</strong> to <strong>741741</strong>.
+      </p>
+      <a href="https://studentaffairs.psu.edu/get-urgent-help"
+         target="_blank" rel="noopener noreferrer">
+        Penn State urgent-help information
+      </a>
+    </section>
+
+    <nav class="tabs" aria-label="Main sections">
+      <button class="tab" type="button" data-panel="ask" aria-selected="true">
+        Ask a question
+      </button>
+      <button class="tab" type="button" data-panel="services" aria-selected="false">
+        Campus Services
+      </button>
+      <button class="tab" type="button" data-panel="resources" aria-selected="false">
+        My Resources
+      </button>
+    </nav>
+
+    <section class="card" id="ask" aria-labelledby="ask-heading">
+      <h2 id="ask-heading">Ask Nittany Guide</h2>
+      <p class="intro">
+        Search prepared answers and official Penn State links. This version does
+        not use AI. If it can’t find a matching FAQ, it will point you to Penn State.
+      </p>
+
+      <form id="search-form">
+        <label for="question">What do you need help finding?</label>
+        <div class="search-row">
+          <input id="question" type="search" required
+                 placeholder="Try “How do I find tutoring?”">
+          <button class="submit-button" type="submit">Search</button>
+        </div>
+      </form>
+
+      <div class="filters" role="group" aria-label="Filter FAQs by topic">
+        <button class="filter" type="button" data-filter="all" aria-pressed="true">All topics</button>
+        <button class="filter" type="button" data-filter="academics" aria-pressed="false">Academics</button>
+        <button class="filter" type="button" data-filter="wellbeing" aria-pressed="false">Well-being</button>
+        <button class="filter" type="button" data-filter="campus" aria-pressed="false">Campus life</button>
+        <button class="filter" type="button" data-filter="admin" aria-pressed="false">University services</button>
+      </div>
+
+      <div id="answer" class="answer" aria-live="polite" role="status">
+        Choose a topic or search a question. Select a sample question below to see
+        its prepared answer and official source.
+      </div>
+
+      <h2 style="font-size:1.15rem; margin-top:22px;">Frequently asked questions</h2>
+      <div id="faq-list" class="faq-list"></div>
+    </section>
+
+    <section class="card" id="services" aria-labelledby="services-heading" hidden>
+      <h2 id="services-heading">Campus Services</h2>
+      <p class="intro">
+        Start with these official university services. Some services and options
+        vary by campus.
+      </p>
+      <div id="services-list" class="resource-grid"></div>
+    </section>
+
+    <section class="card" id="resources" aria-labelledby="resources-heading" hidden>
+      <h2 id="resources-heading">My Resources</h2>
+      <p class="intro">Useful Penn State links for common student needs.</p>
+      <div id="resources-list" class="resource-grid"></div>
+    </section>
+
+    <footer>
+      Nittany Guide is an independent student project, not an official Penn State
+      service. Check linked university pages for current information and campus-specific
+      details. This starter version uses prepared FAQs and does not provide AI answers.
+    </footer>
+  </main>
+
+  <script>
+    // FAQ wording and links are maintained here. Add or revise entries as needed.
+    const faqs = [
+      {
+        category: "academics",
+        question: "Where can I find tutoring or academic support?",
+        keywords: ["tutor", "tutoring", "academic support", "study help", "learning center"],
+        answer: "Academic support and tutoring options are organized by campus and course. Check your campus’s official academic support page or contact your academic adviser.",
+        url: "https://www.psu.edu/academics",
+        source: "Penn State Academics"
+      },
+      {
+        category: "academics",
+        question: "Where do I find academic advising?",
+        keywords: ["advising", "adviser", "advisor", "degree", "major", "course plan"],
+        answer: "For questions about your academic path or degree requirements, contact academic advising through your campus or college.",
+        url: "https://www.psu.edu/academics",
+        source: "Penn State Academics"
+      },
+      {
+        category: "academics",
+        question: "Where can I find registrar information?",
+        keywords: ["registrar", "transcript", "enrollment", "academic calendar", "drop a class"],
+        answer: "The Office of the University Registrar provides official academic and enrollment information.",
+        url: "https://www.registrar.psu.edu/",
+        source: "Office of the University Registrar"
+      },
+      {
+        category: "wellbeing",
+        question: "Where can I find mental health support?",
+        keywords: ["mental health", "counseling", "counselor", "therapy", "stress", "anxiety"],
+        answer: "Penn State Student Affairs provides mental health service information. For immediate danger, call 911. For 24/7 crisis support, call 1-877-229-6400 or text LIONS to 741741.",
+        url: "https://studentaffairs.psu.edu/health-wellbeing/mental-health-services",
+        source: "Penn State mental health services"
+      },
+      {
+        category: "wellbeing",
+        question: "Where can I find student health services?",
+        keywords: ["health", "doctor", "medical", "clinic", "uhs", "sick"],
+        answer: "University Health Services provides health information and services. Check its site for current services and campus details.",
+        url: "https://uhs.psu.edu/",
+        source: "University Health Services"
+      },
+      {
+        category: "campus",
+        question: "Where can I find housing and dining information?",
+        keywords: ["housing", "dorm", "residence", "dining", "meal plan", "food"],
+        answer: "Penn State’s LiveOn site provides university housing and dining information. Details can vary by campus.",
+        url: "https://liveon.psu.edu/",
+        source: "Penn State LiveOn"
+      },
+      {
+        category: "campus",
+        question: "Where can I find library and research help?",
+        keywords: ["library", "libraries", "research", "books", "study space"],
+        answer: "Penn State Libraries provides library, research, and study resources.",
+        url: "https://libraries.psu.edu/",
+        source: "Penn State Libraries"
+      },
+      {
+        category: "admin",
+        question: "Where can I find financial aid information?",
+        keywords: ["financial aid", "student aid", "scholarship", "fafsa", "grants", "loans"],
+        answer: "Penn State’s Office of Student Aid provides information about aid and scholarships, including ways to contact campus offices.",
+        url: "https://www.psu.edu/costs-aid/contact",
+        source: "Contact the Office of Student Aid"
+      },
+      {
+        category: "admin",
+        question: "Where can I search Penn State’s official website?",
+        keywords: ["other", "search penn state", "website", "contact", "not listed"],
+        answer: "Search the official Penn State website or contact the relevant office at your campus.",
+        url: "https://www.psu.edu/",
+        source: "Penn State"
+      }
+    ];
+
+    const services = [
+      {
+        title: "Health services",
+        description: "Student health information and services.",
+        url: "https://uhs.psu.edu/",
+        link: "University Health Services"
+      },
+      {
+        title: "Counseling and mental health",
+        description: "Mental health service information and support.",
+        url: "https://studentaffairs.psu.edu/health-wellbeing/mental-health-services",
+        link: "Penn State mental health services"
+      },
+      {
+        title: "Housing and dining",
+        description: "University housing and dining information.",
+        url: "https://liveon.psu.edu/",
+        link: "Penn State LiveOn"
+      },
+      {
+        title: "Libraries",
+        description: "Library services, research help, and study resources.",
+        url: "https://libraries.psu.edu/",
+        link: "Penn State Libraries"
+      }
+    ];
+
+    const resources = [
+      {
+        title: "Student Affairs",
+        description: "Student support, programs, and services.",
+        url: "https://studentaffairs.psu.edu/",
+        link: "Penn State Student Affairs"
+      },
+      {
+        title: "Financial aid",
+        description: "Aid information and campus office contacts.",
+        url: "https://www.psu.edu/costs-aid/contact",
+        link: "Office of Student Aid"
+      },
+      {
+        title: "Registrar",
+        description: "Official enrollment and academic information.",
+        url: "https://www.registrar.psu.edu/",
+        link: "University Registrar"
+      },
+      {
+        title: "Penn State website",
+        description: "Search for other university information.",
+        url: "https://www.psu.edu/",
+        link: "psu.edu"
+      }
+    ];
+
+    const faqList = document.querySelector("#faq-list");
+    const answer = document.querySelector("#answer");
+    const questionInput = document.querySelector("#question");
+
+    function safeLink(url, label) {
+      const link = document.createElement("a");
+      link.href = url;
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+      link.textContent = label;
+      return link;
+    }
+
+    function renderCards(items, container, categoryName) {
+      container.replaceChildren();
+
+      items.forEach(item => {
+        const article = document.createElement("article");
+        article.className = categoryName ? "faq-card" : "resource-card";
+
+        if (categoryName) {
+          const tag = document.createElement("div");
+          tag.className = "category-label";
+          tag.textContent = categoryName[item.category] || "FAQ";
+          article.append(tag);
+        }
+
+        const heading = document.createElement("h3");
+        heading.textContent = item.question || item.title;
+
+        const description = document.createElement("p");
+        description.textContent = item.answer || item.description;
+
+        article.append(heading, description);
+
+        if (categoryName) {
+          const button = document.createElement("button");
+          button.className = "filter";
+          button.type = "button";
+          button.textContent = "Show answer";
+          button.addEventListener("click", () => showAnswer(item));
+          article.append(button);
+        } else {
+          article.append(safeLink(item.url, item.link));
+        }
+
+        container.append(article);
+      });
+    }
+
+    function showAnswer(item) {
+      answer.replaceChildren();
+
+      const text = document.createElement("p");
+      text.textContent = item.answer;
+
+      const sourceText = document.createElement("p");
+      sourceText.append(document.createTextNode("Official source: "));
+      sourceText.append(safeLink(item.url, item.source));
+
+      answer.append(text, sourceText);
+      answer.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }
+
+    function setFilter(category) {
+      const visible = category === "all"
+        ? faqs
+        : faqs.filter(item => item.category === category);
+
+      renderCards(visible, faqList, {
+        academics: "Academics",
+        wellbeing: "Well-being",
+        campus: "Campus life",
+        admin: "University services"
+      });
+    }
+
+    document.querySelector("#search-form").addEventListener("submit", event => {
+      event.preventDefault();
+      const query = questionInput.value.trim().toLowerCase();
+
+      // Route urgent keyword matches to human support rather than a routine FAQ.
+      const urgentTerms = [
+        "suicide", "kill myself", "hurt myself", "self harm",
+        "overdose", "immediate danger", "hurt someone", "sexual assault"
+      ];
+
+      if (urgentTerms.some(term => query.includes(term))) {
+        answer.replaceChildren();
+
+        const message = document.createElement("p");
+        message.textContent =
+          "This may need urgent help. If anyone is in immediate danger, call 911. " +
+          "For 24/7 Penn State crisis support, call 1-877-229-6400 or text LIONS to 741741.";
+
+        const link = safeLink(
+          "https://studentaffairs.psu.edu/get-urgent-help",
+          "Penn State urgent-help information"
+        );
+
+        answer.append(message, link);
+        answer.classList.add("urgent");
+        return;
+      }
+
+      answer.classList.remove("urgent");
+
+      const matchingFaq = faqs
+        .map(item => ({
+          item,
+          score: item.keywords.reduce(
+            (total, keyword) => total + (query.includes(keyword) ? keyword.length : 0),
+            0
+          )
+        }))
+        .filter(result => result.score > 0)
+        .sort((a, b) => b.score - a.score)[0];
+
+      if (matchingFaq) {
+        showAnswer(matchingFaq.item);
+      } else {
+        answer.replaceChildren();
+
+        const message = document.createElement("p");
+        message.textContent =
+          "I don’t have a prepared answer for that question. Search Penn State’s official website or contact your campus office.";
+
+        answer.append(
+          message,
+          safeLink("https://www.psu.edu/", "Search Penn State’s official website")
+        );
+      }
+    });
+
+    document.querySelectorAll(".filter").forEach(button => {
+      button.addEventListener("click", () => {
+        document.querySelectorAll(".filter").forEach(item =>
+          item.setAttribute("aria-pressed", "false")
+        );
+        button.setAttribute("aria-pressed", "true");
+        setFilter(button.dataset.filter);
+      });
+    });
+
+    document.querySelectorAll(".tab").forEach(button => {
+      button.addEventListener("click", () => {
+        document.querySelectorAll(".tab").forEach(item =>
+          item.setAttribute("aria-selected", "false")
+        );
+        button.setAttribute("aria-selected", "true");
+
+        ["ask", "services", "resources"].forEach(id => {
+          document.getElementById(id).hidden = id !== button.dataset.panel;
+        });
+      });
+    });
+
+    renderCards(faqs, faqList, {
+      academics: "Academics",
+      wellbeing: "Well-being",
+      campus: "Campus life",
+      admin: "University services"
+    });
+    renderCards(services, document.querySelector("#services-list"));
+    renderCards(resources, document.querySelector("#resources-list"));
+  </script>
+</body>
+</html>
