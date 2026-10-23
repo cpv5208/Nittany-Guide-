@@ -201,8 +201,8 @@
     <section class="card" id="ask" aria-labelledby="ask-heading">
       <h2 id="ask-heading">Ask Nittany Guide</h2>
       <p class="intro">
-        Ask a question and Nittany Guide will search Penn State sources.
-        Answers include source links. If it can’t confirm an answer, it will say so.
+        Search prepared answers and official Penn State links. This version does
+        not use AI. If it can’t find a matching FAQ, it will point you to Penn State.
       </p>
 
       <form id="search-form">
@@ -486,74 +486,14 @@
     }
 
     document.querySelector("#search-form").addEventListener("submit", async event => {
-  event.preventDefault();
+      event.preventDefault();
+      const query = questionInput.value.trim().toLowerCase();
 
-  const question = document.querySelector("#question").value.trim();
-  const answerBox = document.querySelector("#answer");
-  const submitButton = event.currentTarget.querySelector('button[type="submit"]');
-
-  answerBox.replaceChildren();
-  answerBox.classList.remove("urgent");
-
-  const loading = document.createElement("p");
-  loading.textContent = "Searching Penn State sources…";
-  answerBox.append(loading);
-
-  submitButton.disabled = true;
-
-  try {
-    const response = await fetch("/api/ask", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ question })
-    });
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      throw new Error(data.error || "The request could not be completed.");
-    }
-
-    answerBox.replaceChildren();
-
-    const answerText = document.createElement("p");
-    answerText.textContent = data.answer;
-    answerBox.append(answerText);
-
-    if (data.sources?.length) {
-      const heading = document.createElement("p");
-      heading.textContent = "Penn State sources:";
-      answerBox.append(heading);
-
-      const list = document.createElement("ul");
-
-      for (const source of data.sources) {
-        const item = document.createElement("li");
-        const link = document.createElement("a");
-        link.href = source.url;
-        link.textContent = source.title;
-        link.target = "_blank";
-        link.rel = "noopener noreferrer";
-        item.append(link);
-        list.append(item);
-      }
-
-      answerBox.append(list);
-    } else {
-      const note = document.createElement("p");
-      note.textContent =
-        "No verified Penn State source link was returned. Please check Penn State’s official website.";
-      answerBox.append(note);
-    }
-  } catch (error) {
-    answerBox.replaceChildren();
-    const message = document.createElement("p");
-    message.textContent = error.message;
-    answerBox.append(message);
-  } finally {
-    submitButton.disabled = false;
-  }
-});
+      // Route urgent keyword matches to human support rather than a routine FAQ.
+      const urgentTerms = [
+        "suicide", "kill myself", "hurt myself", "self harm",
+        "overdose", "immediate danger", "hurt someone", "sexual assault"
+      ];
 
       if (urgentTerms.some(term => query.includes(term))) {
         answer.replaceChildren();
@@ -574,35 +514,38 @@
       }
 
       answer.classList.remove("urgent");
+answer.textContent = "Searching official resources…";
 
-      const matchingFaq = faqs
-        .map(item => ({
-          item,
-          score: item.keywords.reduce(
-            (total, keyword) => total + (query.includes(keyword) ? keyword.length : 0),
-            0
-          )
-        }))
-        .filter(result => result.score > 0)
-        .sort((a, b) => b.score - a.score)[0];
+try {
+  const response = await fetch("/api/ask", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ question: questionInput.value.trim() })
+  });
 
-      if (matchingFaq) {
-        showAnswer(matchingFaq.item);
-      } else {
-        answer.replaceChildren();
+  const result = await response.json();
 
-        const message = document.createElement("p");
-        message.textContent =
-          "I don’t have a prepared answer for that question. Search Penn State’s official website or contact your campus office.";
+  if (!response.ok) {
+    throw new Error(result.error || "Request failed");
+  }
 
-        answer.append(
-          message,
-          safeLink("https://www.psu.edu/", "Search Penn State’s official website")
-        );
-      }
-    });
+  answer.replaceChildren();
 
-    document.querySelectorAll(".filter").forEach(button => {
+  const message = document.createElement("p");
+  message.textContent = result.answer;
+
+  const source = document.createElement("p");
+  source.append(document.createTextNode("Official source: "));
+  source.append(safeLink(result.url, result.source));
+
+  answer.append(message, source);
+} catch (error) {
+  answer.textContent =
+    "Sorry, the guide couldn’t answer right now. Please try again.";
+  console.error(error);
+}
+
+    document.querySelectorAll(".filters .filter").forEach(button => {
       button.addEventListener("click", () => {
         document.querySelectorAll(".filter").forEach(item =>
           item.setAttribute("aria-pressed", "false")
